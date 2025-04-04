@@ -32,6 +32,8 @@ import ProductosFaltantes from "./components/inventario/ProductosFaltantes";
 import ProductosPrecio from "./components/inventario/ProductosPrecio";
 import MateriaPrima from "./components/inventario/MateriaPrima";
 import RegistroMateria from "./components/inventario/RegistroMateria";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ProtectedRouteRegistrarp from "./components/auth/ProtectedRouteRegistrarp";
 
 
 export default function App() {
@@ -42,7 +44,7 @@ export default function App() {
 
         <Routes>
           {/* Dashboard Layout */}
-          <Route index path="/" element={<SignIn />} />
+          <Route index path="/" element={<ProtectedRoute element={<SignIn />} />} />
           <Route element={<AppLayout />}>
             <Route element={<PrivateRoute />}>
               <Route index path="/home" element={<Home />} />
@@ -62,7 +64,19 @@ export default function App() {
             <Route path="/productosprecio" element={<ProductosPrecio />} />
             <Route path="/materiaprima" element={<MateriaPrima />} />
             <Route path="/registromateria" element={<RegistroMateria />} />
-              
+
+              <Route path="/registrarp" element={<ProtectedRouteRegistrarp element={<RegistrarP />} />} />
+              <Route path="/fases" element={<ProtectedRouteRegistrarp element={<Fases />} />} />
+              <Route path="/notasalida" element={<ProtectedRouteRegistrarp element={<NotaSalida />} />} />
+
+              {/* Tables */}
+              <Route path="/basic-tables" element={<BasicTables />} />
+              <Route
+                path="/productosfaltantes"
+                element={<ProductosFaltantes />}
+              />
+              <Route path="/productosprecio" element={<ProtectedRouteRegistrarp element={<ProductosPrecio />} />} />
+
 
               {/* Ui Elements */}
               <Route path="/alerts" element={<Alerts />} />

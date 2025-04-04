@@ -187,7 +187,7 @@ export default function ProductosFaltantes() {
     console.log("Enviando los siguientes productos:", productosARegistrar);
 
     try {
-        const response = await axios.post("http://localhost:8000/api/products", 
+        const response = await axios.post("https://api.uniecosanmateo.icu/api/products",
             { productos: productosARegistrar },  // Enviar como objeto con array de productos
             {
                 headers: {
@@ -245,7 +245,7 @@ const registrarInventario = async (productosGuardados: ProductoGuardado[]) => {
     console.log("Enviando los siguientes inventarios:", inventariosARegistrar);
 
     try {
-        const response = await axios.post("http://localhost:8000/api/productsInventory", 
+        const response = await axios.post("https://api.uniecosanmateo.icu/api/productsInventory", 
             { productos: inventariosARegistrar },  // Enviar como objeto con array de productos
             {
                 headers: {
