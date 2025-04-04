@@ -102,6 +102,7 @@ export default function RegistroMateria() {
             return; // Salir de la función si hay campos vacíos
         }     
         const nuevoProducto = {
+            id: Date.now(), // Genera un identificador único basado en el tiempo
             diametroUno: value1,
             diametroDos: value2,
             largo: value3,
@@ -380,7 +381,7 @@ const registrarInventario = async (productosGuardados: ProductoGuardado[]) => {
 
             <div className="card flex flex-wrap gap-3 p-fluid mt-2">
                 <div className="ml-auto">
-                    <Toast ref={toast} />
+                    <Toast ref={toast} position="bottom-left"/>
                     <ConfirmDialog 
                         group="declarative" 
                         visible={visible} 

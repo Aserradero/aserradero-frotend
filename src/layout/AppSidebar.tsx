@@ -34,7 +34,11 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "Generar nota de salida", path: "/NotaSalida", pro: false },
       { name: "Fases de produccion", path: "/Fases", pro: false },
-      { name: "Registrar productos terminados", path: "/RegistrarP", pro: false,},
+      {
+        name: "Registrar productos terminados",
+        path: "/RegistrarP",
+        pro: false,
+      },
       { name: "Historial de producción", path: "#", pro: false },
     ],
   },
@@ -291,26 +295,19 @@ const AppSidebar: React.FC = () => {
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
-                className="dark:hidden"
                 src="/images/logo/logo.png"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={30}
+                height={30}
               />
-              <img
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
+              <p>UNIDAD SAN MATEO</p>
             </>
           ) : (
             <img
-              src="/images/logo/logo.svg"
+              src="/images/logo/logo.png"
               alt="Logo"
-              width={32}
-              height={32}
+              width={30}
+              height={30}
             />
           )}
         </Link>
@@ -344,7 +341,9 @@ const AppSidebar: React.FC = () => {
               >
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Otros"
-                ) : (<HorizontaLDots />)}
+                ) : (
+                  <HorizontaLDots />
+                )}
               </h2>
               {renderMenuItems(othersItems, "others")}
             </div>
