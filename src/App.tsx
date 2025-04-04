@@ -31,6 +31,8 @@ import UpdatePass from "./pages/AuthPages/UpdatePass";
 import ProductosFaltantes from "./components/inventario/ProductosFaltantes";
 import ProductosPrecio from "./components/inventario/ProductosPrecio";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ProtectedRouteRegistrarp from "./components/auth/ProtectedRouteRegistrarp";
+
 
 export default function App() {
   return (
@@ -50,9 +52,9 @@ export default function App() {
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/blank" element={<Blank />} />
               {/* Forms */}
-              <Route path="/registrarp" element={<RegistrarP />} />
-              <Route path="/fases" element={<Fases />} />
-              <Route path="/notasalida" element={<NotaSalida />} />
+              <Route path="/registrarp" element={<ProtectedRouteRegistrarp element={<RegistrarP />} />} />
+              <Route path="/fases" element={<ProtectedRouteRegistrarp element={<Fases />} />} />
+              <Route path="/notasalida" element={<ProtectedRouteRegistrarp element={<NotaSalida />} />} />
 
               {/* Tables */}
               <Route path="/basic-tables" element={<BasicTables />} />
@@ -60,7 +62,7 @@ export default function App() {
                 path="/productosfaltantes"
                 element={<ProductosFaltantes />}
               />
-              <Route path="/productosprecio" element={<ProductosPrecio />} />
+              <Route path="/productosprecio" element={<ProtectedRouteRegistrarp element={<ProductosPrecio />} />} />
 
               {/* Ui Elements */}
               <Route path="/alerts" element={<Alerts />} />
