@@ -52,7 +52,7 @@ export default function MateriaPrima() {
   useEffect(() => {
     recargarProductos();
     recargarInventario();
-  }, [products1]);
+  }, []);
 
   // Función para recargar los datos de la API  
   const recargarProductos = async () => {
