@@ -81,9 +81,8 @@ export default function MateriaPrima() {
 
   const totalPiezas = products1.length;
 
- // Función para actualizar los datos del producto
-   const handleSave = async (e?: React.FormEvent) => {
-    e?.preventDefault?.();
+ // Función para actualizar los datos del producto e?: React.FormEvent  e?.preventDefault?.();
+   const handleSave = async () => {   
     if (!selectedProduct || selectedProduct.stockIdeal === 0) {
       toast.current?.show({
         severity: "warn",
@@ -96,7 +95,7 @@ export default function MateriaPrima() {
   
     try {
       // Hacer una solicitud PUT a la API para actualizar el producto
-      const response = await axios.put(`https://api.uniecosanmateo.icu/api/rawMaterialInventory/${selectedProduct.id}`,
+      const response = await axios.put(`http://localhost:8000/api/rawMaterialInventory/${selectedProduct.id}`,
         {
           id: selectedProduct.id, // Asignar el valor del precio
           stockIdeal: selectedProduct.stockIdeal, // Asignar el valor del stock ideal
@@ -355,15 +354,6 @@ export default function MateriaPrima() {
             body={(rowData) => `$ ${rowData.stockIdeal}`}
           ></Column>
           <Column
-            field="cantidad"
-            header="Cantidad"
-            sortable
-            style={{ width: "10%" }}
-            body={(rowData) =>
-              rowData.rawmaterial ? rowData.rawmaterial.cantidad: "N/A"
-            }
-          ></Column>
-          <Column
             field="calidad"
             header="Calidad"
             style={{ width: "10%" }}
@@ -453,14 +443,7 @@ export default function MateriaPrima() {
                               maxFractionDigits={2}                               
                             />
                           </div>
-        
-                            <div className="col-span-3 lg:col-span-1">
-                            <Label>Cantidad</Label>
-                            <InputText
-                             value={selectedProduct?.rawmaterial.cantidad}
-                             readOnly 
-                              />
-                          </div>
+                              
         
                           <div className="col-span-3 lg:col-span-1">
                             <Label>Calidad</Label>
