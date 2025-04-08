@@ -4,6 +4,7 @@ import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
 import AppSidebarAdmin from "./AppSidebarAdmin";
+import useIdleLogout from "../hooks/useIdleLogout";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -14,6 +15,7 @@ const LayoutContent: React.FC = () => {
   console.log("El rol obtenido es ",userRole);
   // Verifica el rol y renderiza el componente adecuado
   const SidebarComponent = userRole === "admin" ? AppSidebarAdmin : AppSidebar;
+  useIdleLogout();
 
   return (
     <div className="min-h-screen xl:flex">

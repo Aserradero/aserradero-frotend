@@ -22,7 +22,7 @@ export default function UserDropdown() {
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token"); // Obtener el token antes de eliminarlo
-    console.log("el token es: ",token );
+    console.log("el token es: ", token);
 
     try {
       await axios.post(
