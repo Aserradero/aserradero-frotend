@@ -31,7 +31,7 @@ export default function RegistroMateria() {
     const [value1, setValue1] = useState<number | null>(null);  // Diametro1
     const [value2, setValue2] = useState<number | null>(null);  // Diametro2
     const [value3, setValue3] = useState<number | null>(null);  // Largo
-    const [value4, setValue4] = useState<number | null>(null);  // Cantidad
+    //const [value4, setValue4] = useState<number | null>(null);  // Cantidad
 
     // Estado para la calidad seleccionada
     const [selectedCalidad, setSelectedCalidad] = useState<Calidad | null>(null);
@@ -92,7 +92,7 @@ export default function RegistroMateria() {
     };
 
     const agregarProducto = async() => {
-        if (value1 === null || value2 === null || value3 === null || value4 === null || !selectedCalidad) {
+        if (value1 === null || value2 === null || value3 === null || !selectedCalidad) {
             toast.current?.show({
                 severity: 'warn',
                 summary: 'Campos Vacíos',
@@ -105,7 +105,6 @@ export default function RegistroMateria() {
             diametroUno: value1,
             diametroDos: value2,
             largo: value3,
-            cantidad: value4,
             calidad: selectedCalidad?.name
         };   
          // Para agregar un producto a la lista       
@@ -121,7 +120,6 @@ export default function RegistroMateria() {
         setValue1(null);
         setValue2(null);
         setValue3(null);
-        setValue4(null);
         setSelectedCalidad(null);
     };
 
@@ -163,7 +161,7 @@ export default function RegistroMateria() {
 
     // Convertir cada producto en el formato que espera la API
     const productosARegistrar = productosRegistrados.map(producto => ({
-        cantidad: producto.cantidad,
+        cantidad: 0,
         diametroUno: producto.diametroUno,
         diametroDos: producto.diametroDos,
         largo: producto.largo,
@@ -270,7 +268,7 @@ const registrarInventario = async (productosGuardados: ProductoGuardado[]) => {
 
     return (
         <>
-            <PageMeta title="Rrgistro de Materia prima" description="Registrar los productos faltantes" />
+            <PageMeta title="Registro de Materia prima" description="Registrar los productos faltantes" />
             <PageBreadcrumb pageTitle="Registro de la materia prima" />
 
             <div className="card flex flex-wrap gap-3 p-fluid mt-2">
@@ -355,27 +353,6 @@ const registrarInventario = async (productosGuardados: ProductoGuardado[]) => {
                         />
                     </div>
                 </div>
-                <div className="flex-auto">
-                    <label htmlFor="stacked-buttons" className="font-bold block mb-2">Ingrese la cantidad de materia prima</label>
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <i className="pi pi-chart-bar"></i>
-                        </span>
-                        <InputNumber 
-                            inputId="minmax-buttons" 
-                            value={value4} 
-                            onValueChange={(e) => setValue4(e.value ?? null)} 
-                            mode="decimal" 
-                            showButtons 
-                            incrementButtonClassName="p-button-warning"
-                            decrementButtonClassName="p-button-warning"
-                            min={1} 
-                            max={1000} 
-                            minFractionDigits={0} 
-                            maxFractionDigits={0} 
-                        />
-                    </div>
-                </div>
             </div>
 
             <div className="card flex flex-wrap gap-3 p-fluid mt-2">
@@ -414,12 +391,7 @@ const registrarInventario = async (productosGuardados: ProductoGuardado[]) => {
             paginator
             rows={3}
             rowsPerPageOptions={[3, 6]}
-            header="Materia prima registrada">
-                <Column 
-                    field="cantidad" 
-                    header="Cantidad"
-                    editor={(options) => numberEditor(options)} />
-                    
+            header="Materia prima registrada">                    
                 <Column 
                     field="diametroUno" 
                     header="Diametro Uno"

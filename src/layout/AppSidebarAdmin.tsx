@@ -41,7 +41,6 @@ const navItems: NavItem[] = [
       { name: "Productos con precio", path: "/ProductosPrecio", pro: false,},
       { name: "Registro de materia prima", path: "/RegistroMateria", pro: false },
       { name: "Materia prima", path: "/MateriaPrima", pro: false },
-      { name: "Basic Tables", path: "/basic-tables", pro: false },
     ],
   },
   {

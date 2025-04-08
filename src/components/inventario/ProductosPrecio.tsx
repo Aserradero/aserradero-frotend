@@ -61,7 +61,7 @@ export default function ProductosPrecio() {
   const recargarProductos = async () => {
      try {
         const response = await axios.get<Product[]>(
-          "https://api.uniecosanmateo.icu/api/products"
+          "http://localhost:8000/api/products"
         );
         setProducts(response.data);      
     } catch (error) {
