@@ -11,7 +11,7 @@ import { ArrowUpIcon } from "../../icons";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { ProgressBar } from "primereact/progressbar";
-
+import { InputText } from "primereact/inputtext";
 
 export default function Fases() {
   // Definir el tipo para los productos
@@ -74,7 +74,8 @@ export default function Fases() {
     { name: "En aserrado", code: "En aserrado" },
     { name: "Desorrillado", code: "Desorillado" },
     { name: "En cabezado de madera", code: "En cabezado de madera" },
-    { name: "En clasificacion y almacenamiento",
+    {
+      name: "En clasificacion y almacenamiento",
       code: "En clasificacion y almacenamiento",
     },
     { name: "Produccion finalizada", code: "Produccion finalizada" },
@@ -88,6 +89,18 @@ export default function Fases() {
       numeroProduccion
     );
   }, [numeroProduccion]);
+
+  
+
+  /*
+  useEffect(() => {
+    recargarMateriaPrimaDos();
+    console.log(
+      "Numero de produccion que se mostrara en la tabla de acuerdo a los productos: ",
+      numeroProduccion
+    );
+  }, []);
+  */
 
   //cambiara cuando la cantidad cambie
   useEffect(() => {
@@ -128,6 +141,27 @@ export default function Fases() {
       console.error("Error al obtener los productos", error);
     }
   };
+  /*
+  // Función para recargar los datos de la API
+  const recargarMateriaPrimaDos = async () => {
+    try {
+      const response = await axios.get<Product[]>(
+        "https://api.uniecosanmateo.icu/api/rawMaterials"
+      );
+      const identificadorMa = response.data.reduce((max, current) => {
+        return current.identificadorP > max.identificadorP ? current : max;
+      }, response.data[0]);
+      console.log(
+        "Numero de produccion en la que va: ",
+        identificadorMa.identificadorP + 1
+      );
+      setProducts(response.data);
+      setNumeroProduccion(identificadorMa.identificadorP);
+    } catch (error) {
+      console.error("Error al obtener los productos", error);
+    }
+  };
+  */
 
   // Mostrar el modal de confirmación
   const showTemplate = () => {
@@ -142,28 +176,40 @@ export default function Fases() {
       ),
       acceptLabel: "Si",
       accept: () => {
-        if (products?.length) {
-          actualizarFecha();
-          //setCantidadMP(-1);
-          console.log(
-            "Una vez terminada la produccion y seleccionado el boton el numero es: ",
-            numeroProduccion
-          );
-          console.log("Entro a si");
-          toast.current?.show({
-            severity: "success",
-            summary: "Aceptado",
-            detail: "Producción terminada.",
-            life: 3000,
-          });
+        if (numeroProduccion !== 0) {
+          if (products?.length) {
+            actualizarFecha();
+            //setCantidadMP(-1);
+            console.log(
+              "Una vez terminada la produccion y seleccionado el boton el numero es: ",
+              numeroProduccion
+            );
+            console.log("Entro a si");
+            toast.current?.show({
+              severity: "success",
+              summary: "Aceptado",
+              detail: "Producción terminada.",
+              life: 3000,
+            });
+            setNumeroProduccion(0);
+            setIsUpdated(true);
+          } else {
+            toast.current?.show({
+              severity: "error",
+              summary: "Denegado",
+              detail: "No hay productos para exportar.",
+              life: 3000,
+            });
+            console.log("Entro a no");
+          }
         } else {
           toast.current?.show({
             severity: "error",
             summary: "Denegado",
-            detail: "No hay productos para exportar.",
+            detail:
+              "Debe tener rollos de madera activos para la nueva producción.",
             life: 3000,
           });
-          console.log("Entro a no");
         }
       },
       reject,
@@ -325,7 +371,6 @@ export default function Fases() {
             header="Diametro 1"
             style={{ width: "20%" }}
             body={(rowData) => `${rowData.diametroUno} cm`}
-            
           ></Column>
           <Column
             field="diametroDos"
@@ -349,6 +394,14 @@ export default function Fases() {
         <ConfirmDialog group="templating" />
 
         <div className="card flex justify-end mt-5">
+          <InputText
+            id="numeroP"
+            aria-describedby="username-help"
+            value={String(numeroProduccion)}
+            onChange={(e) => setNumeroProduccion(Number(e.target.value))}
+            disabled={true}
+            className="m-2"
+          />
           <Button
             label="Registrar produccion"
             disabled={isButtonDisabled}
