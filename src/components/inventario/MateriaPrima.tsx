@@ -38,6 +38,13 @@ export default function MateriaPrima() {
     diametroDos: number;
     largo: number;
     metroCR: number;
+    rawmaterial?: RawMaterial; 
+  }
+
+  interface RawMaterial {
+    calidad: string;
+    identificadorP: number;
+    // Otros campos según sea necesario (por ejemplo, diametroUno, diametroDos, etc.)
   }
   //const dt = useRef(null);
   const toast = useRef<Toast>(null); // Tipar la referencia del Toast
@@ -58,9 +65,13 @@ export default function MateriaPrima() {
   const recargarProductos = async () => {
      try {
         const response = await axios.get<Product[]>(
-          "https://api.uniecosanmateo.icu/api/rawMaterials"
-        );
-        setProducts(response.data);      
+          "https://api.uniecosanmateo.icu/api/rawMaterials");
+          
+      setProducts(response.data); 
+      // Establecemos el estado con los productos filtrados
+      //const materias = response.data.filter(materia => materia.identificadorP === 0);
+
+          
     } catch (error) {
       console.error("Error al obtener los productos", error);
     }
@@ -79,10 +90,13 @@ export default function MateriaPrima() {
     }
   };
 
-  const totalPiezas = products1.length;
+  const Materiafiltrada = products1.filter(product => product.rawmaterial && product.rawmaterial.identificadorP === 0);
+  const totalPiezas = Materiafiltrada.length;
+
 
  // Función para actualizar los datos del producto e?: React.FormEvent  e?.preventDefault?.();
-   const handleSave = async () => {   
+   const handleSave = async (e?: React.FormEvent) => {  
+    e?.preventDefault?.(); 
     if (!selectedProduct || selectedProduct.stockIdeal === 0) {
       toast.current?.show({
         severity: "warn",
@@ -113,7 +127,7 @@ export default function MateriaPrima() {
         console.log(selectedProduct); 
         // Si la actualización fue exitosa, se actualiza los productos en el estado
         setProducts1(products1.map((product) =>
-          product.id === selectedProduct.id ? selectedProduct : product
+        product.id === selectedProduct.id ? selectedProduct : product
         )
       );
         toast.current?.show({
@@ -124,6 +138,7 @@ export default function MateriaPrima() {
         });
       }
       closeModal();
+      recargarInventario();
     } catch (error) {
       console.error("Error al guardar los cambios", error);
       toast.current?.show({
@@ -210,7 +225,7 @@ export default function MateriaPrima() {
         const response = await axios.delete(`https://api.uniecosanmateo.icu/api/rawMaterial/${id}`);
         // Actualizar el estado filtrando el producto eliminado
         setProducts1(products1.filter((product) => product.id !== id));
-        
+        recargarInventario();
         toast.current?.show({
           severity: "success",
           summary:"Materia prima eliminada de materias",
@@ -243,14 +258,16 @@ export default function MateriaPrima() {
     };    
   
     // Obtener todas las calidades únicas
-    const Calidades = Array.from(new Set(products.map(product => product.calidad)));
+    const Calidades = Array.from(
+      new Set(products.map((product) => product.calidad))
+    );
   
     // Generar un objeto que contenga la suma de cantidades por calidad
     const calidadData = Calidades.map(calidad => {
       const totalCantidad = products
-        .filter((product) => product.calidad === calidad)
-        .reduce((suma, product) => suma + product.cantidad, 0);
-  
+        .filter((product) => product.calidad === calidad  && product.identificadorP === 0) // Filtramos por calidad e identificadorP
+        .reduce((count) => count + 1, 0);
+      
       return { calidad, totalCantidad };
     });
   
@@ -267,7 +284,7 @@ export default function MateriaPrima() {
                 Cantidad Total de {item.calidad}
               </span>
               <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-                {item.totalCantidad.toFixed(0)}
+                {item.totalCantidad}
               </h4>
             </div>
             <Badge color="success">
@@ -289,15 +306,15 @@ export default function MateriaPrima() {
       <PageBreadcrumb pageTitle="Materia prima" />
 
       <div className="flex flex-wrap gap-8 justify-center">
-        <div className="flex-auto">
+        <div className="flex-auto w-full md:w-auto">
           <label htmlFor="stacked-buttons" className="font-bold block mb-2">
             Asigna el stock ideal de la materia prima
           </label>
         </div>
 
-      <div className="flex flex-row">
+      <div className="flex flex-col md:flex-row w-full md:w-auto justify-center gap-2">
 
-      <div  style={{width: '80%', maxWidth: '420px', height: '120px', margin: '0 auto', padding: '10px', }}>
+      <div  style={{width: '80%', maxWidth: '420px', height: '210px', margin: '0 auto', padding: '10px', }}  className="md:w-1/2">
       <Carousel 
         value={calidadData} // Si deseas múltiples carruseles con la misma información, por ejemplo.
         numVisible={1}
@@ -307,7 +324,7 @@ export default function MateriaPrima() {
     </div>
         
 
-          <div className="rounded-2xl border border-yellow-400 bg-yellow-100 p-2 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 basis-1/2 ml-1">
+          <div className="rounded-2xl border border-yellow-400 bg-yellow-100 p-2 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 basis-1/2 w-full md:w-1/2">
             <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-sm dark:bg-gray-800">
               <i className="pi pi-bars" style={{ color: "slateblue" }}></i>
             </div>
@@ -337,7 +354,9 @@ export default function MateriaPrima() {
       <div className="card">    
       <ConfirmDialog />
         <DataTable
-          value={products1}
+          value={products1.filter(rowData =>
+            rowData.rawmaterial && rowData.rawmaterial.identificadorP === 0
+          )}
           size="small"
           paginator
           rows={3}
@@ -350,13 +369,13 @@ export default function MateriaPrima() {
             field="stockIdeal"
             header="Stock Ideal"
             sortable
-            style={{ width: "11%" }}
+            style={{ width: "12%" }}
             body={(rowData) => `$ ${rowData.stockIdeal}`}
           ></Column>
           <Column
             field="calidad"
             header="Calidad"
-            style={{ width: "10%" }}
+            style={{ width: "11%" }}
             body={(rowData) =>
               rowData.rawmaterial ? rowData.rawmaterial.calidad : "N/A"
             }
@@ -364,7 +383,7 @@ export default function MateriaPrima() {
           <Column
             field="diametroUno"
             header="Diametro Uno"
-            style={{ width: "11%" }}
+            style={{ width: "12%" }}
             body={(rowData) =>
               rowData.rawmaterial ? rowData.rawmaterial.diametroUno : "N/A"
             }
@@ -372,7 +391,7 @@ export default function MateriaPrima() {
           <Column
             field="diametroDos"
             header="Diametro Dos"
-            style={{ width: "11%" }}
+            style={{ width: "12%" }}
             body={(rowData) =>
               rowData.rawmaterial ? rowData.rawmaterial.diametroDos : "N/A"
             }
@@ -413,24 +432,24 @@ export default function MateriaPrima() {
               
             />
           )}
-          style={{ width: "10%" }}
+          style={{ width: "12%" }}
           header="Eliminar" />          
         </DataTable>
         <Toast ref={toast} position="bottom-left" />
         <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
-        <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <div className="scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
                   <div className="px-2 pr-14">
-                    <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+                    <h4 className="mb-1 text-2xl font-semibold text-gray-800 dark:text-white/90">
                       Actualiza los datos de la mataeria prima
                     </h4>
-                    <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+                    <p className="mb-1 text-xl text-gray-500 dark:text-gray-400 lg:mb-7">
                       Actualiza el stock ideal
                     </p>
                   </div>
                   <form className="flex flex-col">
                       <div className="mt-2">
         
-                        <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-5 lg:grid-cols-2">
                           <div className="col-span-2 lg:col-span-1">
                             <Label>Stock Ideal</Label>
                             <InputNumber 

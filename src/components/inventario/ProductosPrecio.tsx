@@ -82,12 +82,12 @@ export default function ProductosPrecio() {
 
   const totalPiezas = products1.length;
   const volumen = products.reduce(
-    (total, product) => total + product.piesTabla,
-    0
+    (total, product) => total + product.piesTabla, 0
   );
 
   // Función para actualizar los datos del producto
-  const handleSave = async () => {
+  const handleSave = async (e?: React.FormEvent) => {
+    e?.preventDefault?.(); 
     if (
       !selectedProduct ||
       selectedProduct.precioUnitario === 0 ||
@@ -192,7 +192,7 @@ export default function ProductosPrecio() {
 
       toast.current?.show({
         severity: "success",
-        summary: "Producto Eliminado1",
+        summary: "Producto Eliminado",
         detail: "El producto ha sido eliminado correctamente.",
         life: 3000,
       });
@@ -229,7 +229,8 @@ export default function ProductosPrecio() {
       );
       // Actualizar el estado filtrando el producto eliminado
       setProducts1(products1.filter((product) => product.id !== id));
-
+      recargarProductos();
+      recargarInventario();
       toast.current?.show({
         severity: "success",
         summary: "Producto eliminado de productos",
@@ -304,7 +305,7 @@ export default function ProductosPrecio() {
   };
 
   return (
-    <div className="container mx-auto p-2">
+    <div className="flex-auto container mx-auto p-2">
       <PageMeta
         title="Asignar Precio"
         description="Asignar el precio del producto"
@@ -312,20 +313,20 @@ export default function ProductosPrecio() {
       <PageBreadcrumb pageTitle="Productos terminados" />
 
       <div className="flex flex-wrap gap-8 justify-center">
-        <div className="flex-auto">
+        <div className="w-full md:w-auto">
           <label htmlFor="stacked-buttons" className="font-bold block mb-2">
             Asigna los precios de los productos
           </label>
         </div>
 
-        <div className="flex flex-row">
+        <div className="flex flex-col md:flex-row w-full md:w-auto justify-center gap-2">
           <div
             style={{
               width: "80%",
-              maxWidth: "420px",
-              height: "120px",
+              maxWidth: "400px",
+              height: "210px",
               margin: "0 auto",
-              padding: "10px",
+              padding: "12px",
             }}
           >
             <Carousel
@@ -336,7 +337,7 @@ export default function ProductosPrecio() {
             />
           </div>
 
-          <div className="rounded-2xl border border-green-400 bg-green-200 p-2 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 basis-1/2 ">
+          <div className="rounded-2xl border border-green-400 bg-green-200 p-2 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 basis-1/2 w-full md:w-1/2 ">
             <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-sm dark:bg-gray-800">
               <i className="pi pi-box" style={{ color: "slateblue" }}></i>
             </div>
@@ -356,7 +357,7 @@ export default function ProductosPrecio() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-yellow-400 bg-yellow-100 p-2 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 basis-1/2 ml-1">
+          <div className="rounded-2xl border border-yellow-400 bg-yellow-100 p-2 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 basis-1/2 w-full md:w-1/2 ml-1">
             <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-sm dark:bg-gray-800">
               <i className="pi pi-bars" style={{ color: "slateblue" }}></i>
             </div>
