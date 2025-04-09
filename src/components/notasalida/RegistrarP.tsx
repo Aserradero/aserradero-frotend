@@ -252,6 +252,7 @@ export default function RegistrarP() {
 
         setProductosRegistrados([]);
       }
+
     } catch (error) {
       console.error("Error en la solicitud:", error);
 
@@ -289,7 +290,7 @@ export default function RegistrarP() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/productsInventory",
+        "https://api.uniecosanmateo.icu/productsInventory",
         { productos: inventariosARegistrar }, // Enviar como objeto con array de productos
         {
           headers: {
@@ -454,7 +455,7 @@ export default function RegistrarP() {
             rejectLabel="No"
           />
           <div className="card flex justify-content-center mt-3">
-            <Toast ref={toast} position="bottom-right" />
+            <Toast ref={toast} position="bottom-left" />
             <Button
               onClick={agregarProducto}
               icon="pi pi-check"

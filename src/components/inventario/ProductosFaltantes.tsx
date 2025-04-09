@@ -449,7 +449,7 @@ export default function ProductosFaltantes() {
             rejectLabel="No"
           />
           <div className="card flex justify-content-center mt-3">
-            <Toast ref={toast} position="bottom-right" />
+            <Toast ref={toast} position="bottom-left" />
             <Button
               onClick={agregarProducto}
               icon="pi pi-check"

@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
         path: "/RegistrarP",
         pro: false,
       },
-      { name: "Historial de producción", path: "#", pro: false },
+      { name: "Historial de producción", path: "/historialp", pro: false },
     ],
   },
 ];

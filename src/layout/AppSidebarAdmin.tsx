@@ -31,7 +31,7 @@ const navItems: NavItem[] = [
   {
     name: "Producción",
     icon: <ListIcon />,
-    subItems: [{ name: "Historial de producción", path: "#", pro: false }],
+    subItems: [{ name: "Historial de producción", path: "/historialp", pro: false }],
   },
   {
     name: "Inventario",

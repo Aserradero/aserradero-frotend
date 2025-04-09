@@ -34,6 +34,8 @@ import MateriaPrima from "./components/inventario/MateriaPrima";
 import RegistroMateria from "./components/inventario/RegistroMateria";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ProtectedRouteRegistrarp from "./components/auth/ProtectedRouteRegistrarp";
+import HistorialP from "./components/notasalida/HistorialP";
+
 
 export default function App() {
 
@@ -61,6 +63,7 @@ export default function App() {
               <Route path="/registrarp" element={<RegistrarP />} />
               <Route path="/fases" element={<Fases />} />
               <Route path="/notasalida" element={<NotaSalida />} />
+              <Route path="/historialp" element={<HistorialP />} />
 
               {/* Tables */}
               <Route path="/basic-tables" element={<BasicTables />} />
