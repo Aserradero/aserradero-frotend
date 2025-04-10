@@ -1,5 +1,5 @@
 import PageBreadcrumb from "../common/PageBreadCrumb";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { InputNumber } from "primereact/inputnumber";
 //import { InputText } from 'primereact/inputtext';
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
@@ -10,6 +10,7 @@ import PageMeta from "../common/PageMeta";
 import { DataTable, DataTableRowEditCompleteEvent } from "primereact/datatable";
 import { Column, ColumnEditorOptions } from "primereact/column";
 import axios from "axios";
+import { InputText } from "primereact/inputtext";
 
 interface ProductoGuardado {
   id: number;
@@ -24,16 +25,31 @@ interface Calidad {
   name: string;
   code: string;
 }
+
+interface Product {
+  id: number;
+  cantidad: number;
+  diametroUno: number;
+  diametroDos: number;
+  largo: number;
+  metroCR: number;
+  calidad: string;
+  identificadorP: number;
+}
+
 export default function RegistrarP() {
   const [visible, setVisible] = useState<boolean>(false);
   const toast = useRef<Toast>(null);
   const [productosRegistrados, setProductosRegistrados] = useState<any[]>([]);
-
+  // Estado para almacenar el número de producción
+  const [numeroProduccion, setNumeroProduccion] = useState<number>(0);
   // Estados para las medidas del producto
   const [value1, setValue1] = useState<number | null>(null); // Grosor
   const [value2, setValue2] = useState<number | null>(null); // Ancho
   const [value3, setValue3] = useState<number | null>(null); // Largo
   const [value4, setValue4] = useState<number | null>(null); // Cantidad
+  //const [products, setProducts] = useState<Product[]>([]);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   // Estado para la calidad seleccionada
   const [selectedCalidad, setSelectedCalidad] = useState<Calidad | null>(null);
@@ -50,7 +66,14 @@ export default function RegistrarP() {
     { name: "Vigueta", code: "Vigueta" },
     { name: "Plagado", code: "Plagado" },
   ];
-
+  // useEffect para recargar el numero de produccion
+  useEffect(() => {
+    recargarMateriaPrima();
+    console.log(
+      "Numero de produccion en registrar productos: ",
+      numeroProduccion
+    );
+  }, [numeroProduccion]);
   // Función para manejar la edición de una fila
   const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {
     let _productos = [...productosRegistrados];
@@ -77,6 +100,30 @@ export default function RegistrarP() {
         style={{ width: "2rem", padding: "8px" }}
       />
     );
+  };
+
+  // Función para recargar los datos de la API
+  const recargarMateriaPrima = async () => {
+    if (isUpdated) return;
+    const accesoTres=localStorage.getItem("registrarP");
+    if(accesoTres!=null && accesoTres==="true"){
+    try {
+      const response = await axios.get<Product[]>(
+        "https://api.uniecosanmateo.icu/api/rawMaterials"
+      );
+      const identificadorMa = response.data.reduce((max, current) => {
+        return current.identificadorP > max.identificadorP ? current : max;
+      }, response.data[0]);
+      console.log(
+        "Numero de produccion en la que va: ",
+        identificadorMa.identificadorP
+      );
+      //setProducts(response.data);
+      setNumeroProduccion(identificadorMa.identificadorP);
+    } catch (error) {
+      console.error("Error al obtener los productos", error);
+    }
+  }
   };
 
   const calidadEditor = (options: ColumnEditorOptions) => {
@@ -187,10 +234,6 @@ export default function RegistrarP() {
       life: 3000,
     });
   };
-  // Estado para almacenar el número de producción
-  const [numeroProduccion] = useState<number>(() =>
-    parseInt(localStorage.getItem("numeroProduccion") ?? "1", 10)
-  );
 
   const registrarProductos = async () => {
     if (productosRegistrados.length === 0) {
@@ -222,45 +265,66 @@ export default function RegistrarP() {
       ),
       fechaRegistro: new Date().toISOString().split("T")[0],
       user_id: 1,
-      identificadorP: numeroProduccion - 1,
+      identificadorP: numeroProduccion,
     }));
 
     console.log("Enviando los siguientes productos:", productosARegistrar);
 
-    try {
-      const response = await axios.post(
-        "https://api.uniecosanmateo.icu/api/products",
-        { productos: productosARegistrar }, // Enviar como objeto con array de productos
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
+    if (numeroProduccion !== 0) {
+      const accesoDos = localStorage.getItem("registrarP");
+      if (accesoDos != null && accesoDos === "true") {
+        try {
+          const response = await axios.post(
+            "https://api.uniecosanmateo.icu/api/products",
+            { productos: productosARegistrar }, // Enviar como objeto con array de productos
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            }
+          );
+
+          if (response.status === 201) {
+            console.log("Productos registrados correctamente");
+            registrarInventario(response.data.productos);
+            toast.current?.show({
+              severity: "success",
+              summary: "Registro exitoso",
+              detail:
+                "Todos los productos han sido registrados en la base de datos.",
+              life: 3000,
+            });
+
+            setProductosRegistrados([]);
+            setNumeroProduccion(0); // Reiniciar el número de producción
+            setIsUpdated(true); // Actualizar el estado para evitar recargas innecesarias
+            localStorage.setItem("registrarP", "false"); // Cambiar el acceso a false
+          }
+        } catch (error) {
+          console.error("Error en la solicitud:", error);
+
+          toast.current?.show({
+            severity: "error",
+            summary: "Error al registrar",
+            detail: "Hubo un problema al registrar los productos.",
+            life: 3000,
+          });
         }
-      );
-
-      if (response.status === 201) {
-        console.log("Productos registrados correctamente");
-        registrarInventario(response.data.productos);
+      } else {
         toast.current?.show({
-          severity: "success",
-          summary: "Registro exitoso",
-          detail:
-            "Todos los productos han sido registrados en la base de datos.",
-          life: 3000,
+          severity: "error",
+          summary: "Denegado",
+          detail: "Se debe de terminar todas la fases antes de registrar los productos.",
+          life: 5000,
         });
-
-        setProductosRegistrados([]);
       }
-
-    } catch (error) {
-      console.error("Error en la solicitud:", error);
-
+    } else {
       toast.current?.show({
         severity: "error",
-        summary: "Error al registrar",
-        detail: "Hubo un problema al registrar los productos.",
-        life: 3000,
+        summary: "Denegado",
+        detail: "Se debe de terminar todas la fases antes de registrar los productos.",
+        life: 5000,
       });
     }
   };
@@ -312,6 +376,8 @@ export default function RegistrarP() {
         });
 
         setProductosRegistrados([]); // Limpiar los productos registrados
+        setNumeroProduccion(0); // Reiniciar el número de producción
+        setIsUpdated(true); // Actualizar el estado para evitar recargas innecesarias
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
@@ -522,6 +588,14 @@ export default function RegistrarP() {
         </DataTable>
       </div>
       <div className="card flex justify-end mt-5">
+        <InputText
+          id="numeroP"
+          aria-describedby="username-help"
+          value={String(numeroProduccion)}
+          onChange={(e) => setNumeroProduccion(Number(e.target.value))}
+          disabled={true}
+          className="m-2"
+        />
         <Button
           onClick={registrarProductos}
           icon="pi pi-cloud-upload"

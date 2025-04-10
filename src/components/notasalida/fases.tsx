@@ -90,8 +90,6 @@ export default function Fases() {
     );
   }, [numeroProduccion]);
 
-  
-
   /*
   useEffect(() => {
     recargarMateriaPrimaDos();
@@ -193,6 +191,7 @@ export default function Fases() {
             });
             setNumeroProduccion(0);
             setIsUpdated(true);
+            localStorage.setItem("registrarP", "true");
           } else {
             toast.current?.show({
               severity: "error",
@@ -207,8 +206,8 @@ export default function Fases() {
             severity: "error",
             summary: "Denegado",
             detail:
-              "Debe tener rollos de madera activos para la nueva producción.",
-            life: 3000,
+              "Debe de tener rollos de madera activos para la nueva producción.",
+            life: 5000,
           });
         }
       },
