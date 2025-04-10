@@ -93,6 +93,8 @@ export default function SignInForm() {
         });
         setLoading(false);
       }
+      setLoading(false);
+
     } catch (error) {
       // Usamos type assertion para decirle a TypeScript que 'error' es de tipo 'AxiosError'
       const axiosError = error as AxiosError;
