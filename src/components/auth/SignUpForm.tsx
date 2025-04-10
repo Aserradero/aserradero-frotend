@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 //import { Link, Navigate } from "react-router";
 import { Link } from "react-router";
-
 import { useNavigate } from "react-router";
 //import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
-
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 //import Checkbox from "../form/input/Checkbox";
@@ -43,30 +41,19 @@ export default function SignUpForm() {
   const toast = useRef<Toast>(null);
   //Utilizar hook para redirigir
   const navigate = useNavigate();
-
   //ver la contraseña o no
-
   const [showPassword, setShowPassword] = useState(false);
-
   //ver la segunda contrasena
-
   const [showPasswordDos, setShowPasswordDos] = useState(false);
-
   //ver la clave de seguridad
-
   const [showPasswordTres, setShowPasswordTres] = useState(false);
-
   //valor para guardar el valor de repetir contraseña
   const [repetirCon, setRepetirCon] = useState<string>("");
-
   //Ingresar la clave de seguridad en los inputs
   const [claveS, setClaveS] = useState<string>("");
-
   const [loading, setLoading] = useState(false);
-
   //Obtener a todos los ususarios
   const [users, setUsers] = useState<User[]>([]);
-
   const [correoR, setCorreoR] = useState<Boolean>();
 
   //use state para guardar los datos
