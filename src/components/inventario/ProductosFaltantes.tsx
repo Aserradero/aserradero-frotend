@@ -33,6 +33,8 @@ export default function ProductosFaltantes() {
   const [value3, setValue3] = useState<number | null>(null); // Largo
   const [value4, setValue4] = useState<number | null>(null); // Cantidad
 
+  const userData = localStorage.getItem("user"); // Puede ser un string o null
+
   // Estado para la calidad seleccionada
   const [selectedCalidad, setSelectedCalidad] = useState<Calidad | null>(null);
 
@@ -268,7 +270,7 @@ export default function ProductosFaltantes() {
       idProducto: producto.id, // Este campo contiene el id del producto registrado
       precioUnitario: 0, // precioUnitario
       stockIdealPT: 0, // stockideal
-      idUsuario: 1,
+      idUsuario: userData ? JSON.parse(userData).id : null,
     }));
 
     console.log("Enviando los siguientes inventarios:", inventariosARegistrar);

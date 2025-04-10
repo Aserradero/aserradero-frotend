@@ -184,7 +184,7 @@ export default function SignUpForm() {
           toast.current?.show({
             severity: "warn",
             summary: "El usuario ya esta autenticado",
-            detail: "Ya no tiene que realizar la autenticación.",
+            detail: "Ya no tiene que realizar la autenticación. El usuario ya está registrado",
             life: 5000,
           });
           setautenUsuario(true);
@@ -246,12 +246,12 @@ export default function SignUpForm() {
         console.log("La autenticación del usuario es: ", autenUsuario);
         // if (validateForm()) {
         console.log("Llego aca pero no entro");
-        if (autenUsuario && validateFormDos()) {
+        if (autenUsuario) {
           // Procedemos con el registro si autenUsuario es true
           console.log("Usuario autenticado, continuar con el registro.");
           try {
             const response = await axios.put(
-              `https://api.uniecosanmateo.icu/api/user/updateRegister/${formData.email}`,
+              `http://localhost:8000/api/user/updateRegister/${formData.email}`,
               {
                 name: formData.name,
                 apellidos: formData.apellidos,
@@ -272,13 +272,27 @@ export default function SignUpForm() {
 
             setTimeout(() => navigate("/"), 1110);
           } catch (error) {
-            toast.current?.show({
-              severity: "error",
-              summary: "Error",
-              detail: "No se pudo registrar el usuario.",
-              life: 2500,
-            });
+            console.log("error", error);
+            setautenUsuario(false);
             setLoading(false);
+
+            // Verificar si el error es un error de Axios y si tiene respuesta
+            if (axios.isAxiosError(error) && error.response) {
+              toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: error.response.data.error || "Error desconocido", // Mensaje de error de la respuesta o un fallback
+                life: 5000,
+              });
+            } else {
+              // En caso de que no sea un error de Axios o no tenga respuesta, muestra un mensaje genérico
+              toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: "Ocurrió un error inesperado",
+                life: 5000,
+              });
+            }
           }
         } else {
           // Si no está autenticado, podemos hacer algo o mostrar un mensaje
@@ -431,6 +445,7 @@ export default function SignUpForm() {
   };
 
   //  Validaciones antes de enviar
+  /*
   const validateFormDos = () => {
     let newErrors: { [key: string]: string } = {};
 
@@ -460,6 +475,7 @@ export default function SignUpForm() {
     }
     return true;
   };
+  */
 
   const handleVerifyEmail = async () => {
     // Si el correo no está en uso, validar autenticación
@@ -712,4 +728,3 @@ export default function SignUpForm() {
     </div>
   );
 }
-
