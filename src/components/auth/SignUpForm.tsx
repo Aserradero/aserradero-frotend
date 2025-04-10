@@ -71,6 +71,8 @@ export default function SignUpForm() {
   //Viendo si el  usuario ya fue autenticado
   const [autenUsuario, setautenUsuario] = useState<Boolean>();
 
+
+
   //Manejar los cambios en los inputs
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -190,6 +192,7 @@ export default function SignUpForm() {
               "Ya no tiene que realizar la autenticación. El usuario ya está registrado",
             life: 5000,
           });
+          //validateFormDos();
           setautenUsuario(true);
           console.log("Cambio a autenUsuario a : ", autenUsuario);
         }
@@ -245,6 +248,7 @@ export default function SignUpForm() {
   // useEffect que maneja la autenticación y la ejecución posterior
   useEffect(() => {
     const checkAuthAndRegister = async () => {
+      console.log("Si entro para actualizar los datos del usuario");
       if (autenUsuario !== undefined) {
         console.log("La autenticación del usuario es: ", autenUsuario);
         // if (validateForm()) {
@@ -300,7 +304,8 @@ export default function SignUpForm() {
           }
         } else {
           // Si no está autenticado, podemos hacer algo o mostrar un mensaje
-          console.log("El usuario no está autenticado.");
+          console.log("El usuario ya esta autenticado y registrado .");
+          setautenUsuario(false);
         }
         //}
       }
@@ -461,7 +466,7 @@ export default function SignUpForm() {
     if (emailExists) {
       newErrors.genero = "El correo electrónico ya existe.";
     }
-    console.log("Lo que obtengo si el usuario ya existe: ", emailExists);
+    console.log("Lo que obtengo si el usuario ya existe, se toma tambien el nombre de usuario: ", emailExists);
 
     if (Object.keys(newErrors).length > 0) {
       //  **Mostrar el primer error con Toast**
@@ -478,6 +483,7 @@ export default function SignUpForm() {
       setLoading(false);
       return false;
     }
+    setautenUsuario(false);
     return true;
   };
 
