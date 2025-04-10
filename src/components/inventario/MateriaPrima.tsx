@@ -109,7 +109,7 @@ export default function MateriaPrima() {
   
     try {
       // Hacer una solicitud PUT a la API para actualizar el producto
-      const response = await axios.put(`http://localhost:8000/api/rawMaterialInventory/${selectedProduct.id}`,
+      const response = await axios.put(`https://api.uniecosanmateo.icu/api/rawMaterialInventory/${selectedProduct.id}`,
         {
           id: selectedProduct.id, // Asignar el valor del precio
           stockIdeal: selectedProduct.stockIdeal, // Asignar el valor del stock ideal
