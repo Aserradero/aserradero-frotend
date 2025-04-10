@@ -154,12 +154,14 @@ export default function SignUpForm() {
 
   const validarAutenticacion = async () => {
     console.log("Formata data mail que se obtiene: ", formData.email);
+    //setLoading(false);
     if (
       formData.email !== "" &&
       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email) &&
       validateFormAntesEnviarCorreo()
     ) {
       try {
+        setLoading(true);
         const responseAuten = await axios.post(
           "https://api.uniecosanmateo.icu/api/verify-email",
           { email: formData.email }
@@ -184,7 +186,8 @@ export default function SignUpForm() {
           toast.current?.show({
             severity: "warn",
             summary: "El usuario ya esta autenticado",
-            detail: "Ya no tiene que realizar la autenticación. El usuario ya está registrado",
+            detail:
+              "Ya no tiene que realizar la autenticación. El usuario ya está registrado",
             life: 5000,
           });
           setautenUsuario(true);
@@ -246,12 +249,13 @@ export default function SignUpForm() {
         console.log("La autenticación del usuario es: ", autenUsuario);
         // if (validateForm()) {
         console.log("Llego aca pero no entro");
-        if (autenUsuario) {
+        if (autenUsuario && validateFormDos()) {
           // Procedemos con el registro si autenUsuario es true
           console.log("Usuario autenticado, continuar con el registro.");
           try {
+            setLoading(true);
             const response = await axios.put(
-              `http://localhost:8000/api/user/updateRegister/${formData.email}`,
+              `https://api.uniecosanmateo.icu/api/user/updateRegister/${formData.email}`,
               {
                 name: formData.name,
                 apellidos: formData.apellidos,
@@ -445,7 +449,7 @@ export default function SignUpForm() {
   };
 
   //  Validaciones antes de enviar
-  /*
+
   const validateFormDos = () => {
     let newErrors: { [key: string]: string } = {};
 
@@ -461,7 +465,7 @@ export default function SignUpForm() {
 
     if (Object.keys(newErrors).length > 0) {
       //  **Mostrar el primer error con Toast**
-
+      /*
       const firstErrorKey = Object.keys(newErrors)[0];
       toast.current?.show({
         severity: "error", // "warn" para advertencias, "error" para errores
@@ -469,13 +473,13 @@ export default function SignUpForm() {
         detail: newErrors[firstErrorKey],
         life: 5000,
       });
+      */
 
       setLoading(false);
       return false;
     }
     return true;
   };
-  */
 
   const handleVerifyEmail = async () => {
     // Si el correo no está en uso, validar autenticación
@@ -702,7 +706,7 @@ export default function SignUpForm() {
                       label="Registrar"
                       onClick={async () => {
                         obtenerUsuarios();
-                        setLoading(true); // Empieza el estado de carga
+                        //setLoading(true); // Empieza el estado de carga
                         handleVerifyEmail(); // Llama a la función para verificar el correo
                       }}
                     />
