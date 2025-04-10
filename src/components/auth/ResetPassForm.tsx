@@ -12,11 +12,8 @@ export default function ResetPassForm() {
   const toast = useRef<Toast | null>(null);
   //usando una varible para guardar el correo
   const [email, setEmail] = useState<string>("");
-
   const [token, setTokens] = useState<string | number | undefined>("");
-
   const [codigo, setCodigo] = useState<number | null>(null); // Almacena el código
-
   const [emailVe, setEmailVe] = useState<string>("");
   //Utilizar hook para redirigir
   const navigate = useNavigate();
