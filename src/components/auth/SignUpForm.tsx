@@ -154,12 +154,14 @@ export default function SignUpForm() {
 
   const validarAutenticacion = async () => {
     console.log("Formata data mail que se obtiene: ", formData.email);
+    //setLoading(false);
     if (
       formData.email !== "" &&
       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email) &&
       validateFormAntesEnviarCorreo()
     ) {
       try {
+        setLoading(true);
         const responseAuten = await axios.post(
           "https://api.uniecosanmateo.icu/api/verify-email",
           { email: formData.email }
@@ -251,6 +253,7 @@ export default function SignUpForm() {
           // Procedemos con el registro si autenUsuario es true
           console.log("Usuario autenticado, continuar con el registro.");
           try {
+            setLoading(true);
             const response = await axios.put(
               `https://api.uniecosanmateo.icu/api/user/updateRegister/${formData.email}`,
               {
@@ -703,7 +706,7 @@ export default function SignUpForm() {
                       label="Registrar"
                       onClick={async () => {
                         obtenerUsuarios();
-                        setLoading(true); // Empieza el estado de carga
+                        //setLoading(true); // Empieza el estado de carga
                         handleVerifyEmail(); // Llama a la función para verificar el correo
                       }}
                     />

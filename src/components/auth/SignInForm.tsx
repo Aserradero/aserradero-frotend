@@ -50,6 +50,7 @@ export default function SignInForm() {
         formData.email.trim().length > 0 &&
         formData.password.trim().length > 0
       ) {
+        setLoading(true);
         if (formData.password.trim().length >= 8) {
           const response = await axios.post(
             "https://api.uniecosanmateo.icu/api/user/login",
@@ -94,7 +95,6 @@ export default function SignInForm() {
         setLoading(false);
       }
       setLoading(false);
-
     } catch (error) {
       // Usamos type assertion para decirle a TypeScript que 'error' es de tipo 'AxiosError'
       const axiosError = error as AxiosError;
@@ -226,7 +226,7 @@ export default function SignInForm() {
                     className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-green-600 shadow-theme-xs hover:bg-green-700"
                     severity="success"
                     label="Ingresar"
-                    onClick={() => setLoading(true)}
+                    //onClick={() => setLoading(true)}
                   ></Button>
                 </div>
               </div>
