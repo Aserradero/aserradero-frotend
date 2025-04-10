@@ -59,18 +59,15 @@ export default function App() {
               <Route path="/profile" element={<UserProfiles />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/blank" element={<Blank />} />
-              {/* Forms */}
+              {/* Produccion */}
               <Route path="/registrarp" element={<RegistrarP />} />
               <Route path="/fases" element={<Fases />} />
               <Route path="/notasalida" element={<NotaSalida />} />
               <Route path="/historialp" element={<HistorialP />} />
 
-              {/* Tables */}
+              {/* Inventario */}
               <Route path="/basic-tables" element={<BasicTables />} />
-              <Route
-                path="/productosfaltantes"
-                element={<ProductosFaltantes />}
-              />
+              <Route path="/productosfaltantes" element={<ProductosFaltantes />} />
               <Route path="/productosprecio" element={<ProductosPrecio />} />
               <Route path="/materiaprima" element={<MateriaPrima />} />
               <Route path="/registromateria" element={<RegistroMateria />} />

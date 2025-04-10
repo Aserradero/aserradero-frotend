@@ -46,34 +46,6 @@ const navItems: NavItem[] = [
 
 const othersItems: NavItem[] = [
   {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
-  },
-  {
     icon: <UserCircleIcon />,
     name: "User Profile",
     path: "/profile",
@@ -291,14 +263,14 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="/home">
+        <Link to="/home" className="flex items-center">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
                 src="/images/logo/logo.png"
                 alt="Logo"
-                width={30}
-                height={30}
+                width={40}
+                height={40}
               />
               <p>UNIDAD SAN MATEO</p>
             </>
@@ -306,10 +278,10 @@ const AppSidebar: React.FC = () => {
             <img
               src="/images/logo/logo.png"
               alt="Logo"
-              width={30}
-              height={30}
+              width={40}
+              height={40}
             />
-          )}
+          ) }
         </Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
