@@ -253,7 +253,7 @@ export default function ProductosFaltantes() {
   };
 
   const registrarInventario = async (
-    productosGuardados: ProductoGuardado[]
+    productosGuardados: ProductoGuardado[] 
   ) => {
     if (productosGuardados.length === 0) {
       toast.current?.show({

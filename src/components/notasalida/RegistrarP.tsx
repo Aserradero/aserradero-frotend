@@ -329,7 +329,7 @@ export default function RegistrarP() {
     }
   };
 
-  const registrarInventario = async (
+  const registrarInventario = async ( 
     productosGuardados: ProductoGuardado[]
   ) => {
     if (productosGuardados.length === 0) {
