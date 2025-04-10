@@ -265,7 +265,7 @@ export default function RegistrarP() {
     }
   };
 
-  const registrarInventario = async (
+  const registrarInventario = async ( 
     productosGuardados: ProductoGuardado[]
   ) => {
     if (productosGuardados.length === 0) {
@@ -290,7 +290,7 @@ export default function RegistrarP() {
 
     try {
       const response = await axios.post(
-        "https://api.uniecosanmateo.icu/productsInventory",
+        "https://api.uniecosanmateo.icu/api/productsInventory",
         { productos: inventariosARegistrar }, // Enviar como objeto con array de productos
         {
           headers: {
