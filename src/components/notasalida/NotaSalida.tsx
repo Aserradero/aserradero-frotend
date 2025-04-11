@@ -88,7 +88,7 @@ export default function NotaSalida() {
           toast.current?.show({
             severity: "error",
             summary: "Denegado",
-            detail: "No hay productos para exportar.",
+            detail: "No hay materias primas para exportar.",
             life: 3000,
           });
         }
@@ -113,7 +113,7 @@ export default function NotaSalida() {
           "https://api.uniecosanmateo.icu/api/rawMaterial/identificadorP",
           updatedProducts
         );
-        console.log("Productos actualizados en la API");
+        console.log("Materias primas actualizadas en la API");
         await recargarMateriaPrima();
       } catch (error) {
         console.error("Error actualizando:", error);
