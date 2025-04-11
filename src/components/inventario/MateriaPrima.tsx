@@ -97,7 +97,7 @@ export default function MateriaPrima() {
  // Función para actualizar los datos del producto e?: React.FormEvent  e?.preventDefault?.();
    const handleSave = async (e?: React.FormEvent) => {  
     e?.preventDefault?.(); 
-    if (!selectedProduct || selectedProduct.stockIdeal === 0) {
+   {/* if (!selectedProduct || selectedProduct.stockIdeal === 0) {
       toast.current?.show({
         severity: "warn",
         summary: "Campo incompleto",
@@ -105,7 +105,7 @@ export default function MateriaPrima() {
         life: 3000,
       });
       return; // Evita enviar la solicitud si los campos no son válidos
-    }
+    }*/}
   
     try {
       // Hacer una solicitud PUT a la API para actualizar el producto
@@ -308,7 +308,7 @@ export default function MateriaPrima() {
       <div className="flex flex-wrap gap-8 justify-center">
         <div className="flex-auto w-full md:w-auto">
           <label htmlFor="stacked-buttons" className="font-bold block mb-2">
-            Asigna el stock ideal de la materia prima
+            Inventario de la materia prima
           </label>
         </div>
 
@@ -365,17 +365,17 @@ export default function MateriaPrima() {
           dataKey="id"
           emptyMessage="No hay materia prima para mostrar."
         >
-          <Column
+         {/* <Column
             field="stockIdeal"
             header="Stock Ideal"
             sortable
             style={{ width: "12%" }}
             body={(rowData) => `$ ${rowData.stockIdeal}`}
-          ></Column>
+          ></Column>*/}
           <Column
             field="calidad"
             header="Calidad"
-            style={{ width: "11%" }}
+            style={{ width: "12%" }}
             body={(rowData) =>
               rowData.rawmaterial ? rowData.rawmaterial.calidad : "N/A"
             }
@@ -407,7 +407,7 @@ export default function MateriaPrima() {
           <Column
             field="metroCR"
             header="Metros CR"
-            style={{ width: "14%" }}
+            style={{ width: "15%" }}
             body={(rowData) =>
             rowData.rawmaterial ? rowData.rawmaterial.metroCR : "N/A"
             }
@@ -420,8 +420,8 @@ export default function MateriaPrima() {
               className="p-button-rounded p-button-success"
             />
           )}
-          header="Registrar"
-          style={{ width: "10%" }} 
+          header="Editar"
+          style={{ width: "12%" }} 
         />
         <Toast ref={toast} position="bottom-left" />
           <Column  body={(rowData) => (
@@ -432,7 +432,7 @@ export default function MateriaPrima() {
               
             />
           )}
-          style={{ width: "12%" }}
+          style={{ width: "22%" }}
           header="Eliminar" />          
         </DataTable>
         <Toast ref={toast} position="bottom-left" />
@@ -440,7 +440,7 @@ export default function MateriaPrima() {
         <div className="scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
                   <div className="px-2 pr-14">
                     <h4 className="mb-1 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                      Actualiza los datos de la mataeria prima
+                      Actualiza los datos de la materia prima
                     </h4>
                     <p className="mb-1 text-xl text-gray-500 dark:text-gray-400 lg:mb-7">
                       Actualiza el stock ideal
@@ -450,7 +450,7 @@ export default function MateriaPrima() {
                       <div className="mt-2">
         
                         <div className="grid grid-cols-2 gap-x-6 gap-y-5 lg:grid-cols-2">
-                          <div className="col-span-2 lg:col-span-1">
+                          {/*<div className="col-span-2 lg:col-span-1">
                             <Label>Stock Ideal</Label>
                             <InputNumber 
                               inputId="minmax-buttons" 
@@ -461,7 +461,7 @@ export default function MateriaPrima() {
                               minFractionDigits={2} 
                               maxFractionDigits={2}                               
                             />
-                          </div>
+                          </div>*/}
                               
         
                           <div className="col-span-3 lg:col-span-1">
