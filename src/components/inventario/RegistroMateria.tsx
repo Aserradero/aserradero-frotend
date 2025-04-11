@@ -42,7 +42,7 @@ export default function RegistroMateria() {
   // Verificar si el valor no es null y luego parsearlo
   if (userData) {
     const user = JSON.parse(userData); // Convertir el string JSON en un objeto
-    const userID=user.id;
+    const userID = user.id;
     console.log(userID); // Ahora puedes usar el objeto `user`
   } else {
     console.log("No user data found.");
@@ -429,7 +429,7 @@ export default function RegistroMateria() {
             rejectLabel="No"
           />
           <div className="card flex justify-content-center mt-3">
-            <Toast ref={toast} position="bottom-right" />
+            <Toast ref={toast} position="bottom-left" />
             <Button
               onClick={agregarProducto}
               icon="pi pi-check"
@@ -440,7 +440,7 @@ export default function RegistroMateria() {
           </div>
         </div>
       </div>
-      <div className="card">
+      <div className="card p-fluid">
         <DataTable
           value={productosRegistrados}
           editMode="row"
@@ -451,26 +451,31 @@ export default function RegistroMateria() {
           rows={3}
           rowsPerPageOptions={[3, 6]}
           header="Materia prima registrada"
+          tableStyle={{ minWidth: "50rem" }}
         >
           <Column
             field="diametroUno"
             header="Diametro Uno"
             editor={(options) => numberEditor(options)}
+            style={{ width: "14.28%" }}
           />
           <Column
             field="diametroDos"
             header="Diametro Dos"
             editor={(options) => numberEditor(options)}
+            style={{ width: "14.28%" }}
           />
           <Column
             field="largo"
             header="Largo"
             editor={(options) => numberEditor(options)}
+            style={{ width: "14.28%" }}
           />
           <Column
             field="calidad"
             header="Calidad"
             editor={(options) => calidadEditor(options)}
+            style={{ width: "14.28%" }}
           />
           <Column
             header="Metros CR"
@@ -484,9 +489,19 @@ export default function RegistroMateria() {
                 10;
               return metroCR.toFixed(1);
             }}
+            style={{ width: "14.28%" }}
           />
-          <Column rowEditor header="Editar" bodyStyle={{ textAlign: "left" }} />
-          <Column body={actionTemplate} header="Eliminar" />
+          <Column
+            rowEditor
+            header="Editar"
+            bodyStyle={{ textAlign: "left" }}
+            style={{ width: "14.28%" }}
+          />
+          <Column
+            body={actionTemplate}
+            header="Eliminar"
+            style={{ width: "14.28%" }}
+          />
         </DataTable>
       </div>
       <div className="card flex justify-end mt-5">

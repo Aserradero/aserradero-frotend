@@ -36,9 +36,10 @@ export default function NotaSalida() {
   // Estado para almacenar el número de producción
   const [numeroProduccion, setNumeroProduccion] = useState<number>(0);
   const [valor, setValor] = useState<string | undefined>(undefined);
+  const userData = localStorage.getItem("user");
 
   // Para asegurar que `acceso` es un string y no undefined
-  const acceso: string = valor ?? 'Valor predeterminado';
+  const acceso: string = valor ?? "Valor predeterminado";
   // useEffect para guardar el número de producción en localStorage
   useEffect(() => {
     recargarMateriaPrima();
@@ -50,15 +51,19 @@ export default function NotaSalida() {
       const response = await axios.get<Product[]>(
         "https://api.uniecosanmateo.icu/api/rawMaterials"
       );
-      const identificadorMa=response.data.reduce((max,current)=>{return (current.identificadorP>max.identificadorP)?current:max;},response.data[0]);
-      console.log("Numero de produccion en la que va: ",identificadorMa.identificadorP+1);
+      const identificadorMa = response.data.reduce((max, current) => {
+        return current.identificadorP > max.identificadorP ? current : max;
+      }, response.data[0]);
+      console.log(
+        "Numero de produccion en la que va: ",
+        identificadorMa.identificadorP + 1
+      );
       setProducts(response.data);
-      setNumeroProduccion(identificadorMa.identificadorP+1);
+      setNumeroProduccion(identificadorMa.identificadorP + 1);
     } catch (error) {
       console.error("Error al obtener los productos", error);
     }
   };
-
 
   //cambiara cuando acceso cambie
   useEffect(() => {
@@ -134,6 +139,13 @@ export default function NotaSalida() {
 
   const exportPdf = async (): Promise<void> => {
     const doc = new jsPDF();
+    const user = JSON.parse(userData || "{}");
+    const fecha = new Date();
+    const dia = fecha.getDate().toString().padStart(2, "0");
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0"); // +1 porque los meses van de 0 a 11
+    const anio = fecha.getFullYear();
+
+    const fechaFormateada = `${dia}/${mes}/${anio}`;
 
     // URL de la imagen dentro de `public/img/`
     const imageUrl: string = `${window.location.origin}/images/logo.png`;
@@ -172,12 +184,20 @@ export default function NotaSalida() {
     // Crear un nuevo documento
     addHeader(doc);
 
+    const total = selectedProducts.reduce(
+      (sum, p) => sum + (p.metroCR || 0),
+      0
+    );
+    const totalFormateado = total.toFixed(2);
+
+    const totalPiezas=selectedProducts.length;
+
     doc.setFontSize(14);
     doc.text("Lista de materia prima que se mandará a producción.", 10, 55);
-    doc.text("Fecha: ", 10, 65);
-    doc.text("Usuario: ", 10, 70);
-    doc.text("Volumen total: ", 10, 75);
-    doc.text("Total de piezas: ", 10, 80);
+    doc.text("Fecha: " + fechaFormateada + "", 10, 65);
+    doc.text("Usuario: " + user.name + " " + user.apellidos, 10, 70);
+    doc.text("Volumen total: "+totalFormateado+" m³", 10, 75);
+    doc.text("Total de piezas: "+totalPiezas, 10, 80);
 
     // Aquí deberías definir `exportColumns` y `selectedProducts` correctamente.
     const exportColumns: Column[] = [
