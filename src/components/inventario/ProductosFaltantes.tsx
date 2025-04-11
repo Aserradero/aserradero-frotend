@@ -1,5 +1,5 @@
 import PageBreadcrumb from "../common/PageBreadCrumb";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { ConfirmDialog } from "primereact/confirmdialog";
@@ -14,6 +14,17 @@ import axios from "axios";
 interface Calidad {
   name: string;
   code: string;
+}
+
+interface Product {
+  id: number;
+  cantidad: number;
+  diametroUno: number;
+  diametroDos: number;
+  largo: number;
+  metroCR: number;
+  calidad: string;
+  identificadorP: number;
 }
 interface ProductoGuardado {
   id: number;
@@ -37,6 +48,14 @@ export default function ProductosFaltantes() {
 
   // Estado para la calidad seleccionada
   const [selectedCalidad, setSelectedCalidad] = useState<Calidad | null>(null);
+
+  const [identificadoresUnicos, setIdentificadoresUnicos] = useState<number[]>(
+    []
+  );
+
+  const [selectedIdentificadorP, setSelectedIdenticadorP] = useState<
+    number | null
+  >(null);
 
   // Opciones de calidad
   const calidad: Calidad[] = [
@@ -91,6 +110,16 @@ export default function ProductosFaltantes() {
     );
   };
 
+  const identificadorPEditor = (options: ColumnEditorOptions) => {
+    return (
+      <Dropdown
+        value={options.value}
+        options={identificadoresUnicos}
+        onChange={(e: DropdownChangeEvent) => options.editorCallback!(e.value)}
+      />
+    );
+  };
+
   const accept = () => {
     toast.current?.show({
       severity: "info",
@@ -115,7 +144,8 @@ export default function ProductosFaltantes() {
       value2 === null ||
       value3 === null ||
       value4 === null ||
-      !selectedCalidad
+      !selectedCalidad ||
+      !selectedIdentificadorP
     ) {
       toast.current?.show({
         severity: "warn",
@@ -126,6 +156,7 @@ export default function ProductosFaltantes() {
       });
       return; // Salir de la función si hay campos vacíos
     }
+    console.log("Lo que lleva identificadorP: ", selectedIdentificadorP);
     const nuevoProducto = {
       id: Date.now(), // Asegura un identificador único
       grosor: value1,
@@ -133,6 +164,7 @@ export default function ProductosFaltantes() {
       largo: value3,
       cantidad: value4,
       calidad: selectedCalidad?.name,
+      identificadorP: selectedIdentificadorP,
     };
     // Para agregar un producto a la lista
     setProductosRegistrados([...productosRegistrados, nuevoProducto]);
@@ -149,6 +181,8 @@ export default function ProductosFaltantes() {
     setValue3(null);
     setValue4(null);
     setSelectedCalidad(null);
+    setSelectedIdenticadorP(null);
+    recargarMateriaPrima();
   };
 
   const actionTemplate = (rowData: any) => {
@@ -163,6 +197,43 @@ export default function ProductosFaltantes() {
     );
   };
 
+  const recargarMateriaPrima = async () => {
+    try {
+      const response = await axios.get<Product[]>(
+        "https://api.uniecosanmateo.icu/api/rawMaterials"
+      );
+      const productos = response.data;
+
+      const identificadores = Array.from(
+        new Set(productos.map((p) => p.identificadorP))
+      )
+        .sort((a, b) => a - b)
+        .filter((id) => id !== 0);
+
+      setIdentificadoresUnicos(identificadores); // ← aquí los guardas en el estado
+
+      const identificadorMa = productos.reduce((max, current) => {
+        return current.identificadorP > max.identificadorP ? current : max;
+      }, productos[0]);
+
+      console.log("Identificadores únicos ordenados:", identificadores);
+      console.log(
+        "Fase de producción en la que está la fase:",
+        identificadorMa.identificadorP
+      );
+    } catch (error) {
+      console.error("Error al obtener los productos", error);
+    }
+  };
+
+  useEffect(() => {
+    recargarMateriaPrima(); // Llamar a la función al cargar el componente
+  }, []);
+
+  useEffect(() => {
+    console.log("Los identificadores que estan son", identificadoresUnicos);
+  }, [identificadoresUnicos]); // Dependencia para el efecto
+
   const eliminarProducto = (producto: any) => {
     const productosRestantes = productosRegistrados.filter(
       (p) => p !== producto
@@ -176,9 +247,11 @@ export default function ProductosFaltantes() {
     });
   };
   // Estado para almacenar el número de producción
+  /*
   const [numeroProduccion] = useState<number>(() =>
     parseInt(localStorage.getItem("numeroProduccion") ?? "1", 10)
   );
+  */
 
   const registrarProductos = async () => {
     if (productosRegistrados.length === 0) {
@@ -209,7 +282,7 @@ export default function ProductosFaltantes() {
         ).toFixed(1)
       ),
       fechaRegistro: new Date().toISOString().split("T")[0],
-      identificadorP: numeroProduccion - 1,
+      identificadorP: producto.identificadorP,
     }));
 
     console.log("Enviando los siguientes productos:", productosARegistrar);
@@ -253,7 +326,7 @@ export default function ProductosFaltantes() {
   };
 
   const registrarInventario = async (
-    productosGuardados: ProductoGuardado[] 
+    productosGuardados: ProductoGuardado[]
   ) => {
     if (productosGuardados.length === 0) {
       toast.current?.show({
@@ -389,7 +462,7 @@ export default function ProductosFaltantes() {
         </div>
       </div>
 
-      <div className="card flex flex-wrap gap-3 p-fluid">
+      <div className="card flex flex-wrap gap-3 p-fluid mt-5">
         <div className="flex-auto">
           <label htmlFor="stacked-buttons" className="font-bold block mb-2">
             Calidad de la madera
@@ -433,11 +506,30 @@ export default function ProductosFaltantes() {
             />
           </div>
         </div>
+        <div className="flex-auto">
+          <label htmlFor="stacked-buttons" className="font-bold block mb-2">
+            Producción
+          </label>
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <i className="pi pi-star-fill"></i>
+            </span>
+            <Dropdown
+              value={selectedIdentificadorP}
+              onChange={(e) => setSelectedIdenticadorP(e.value)}
+              options={identificadoresUnicos}
+              placeholder="Seleccione la producción"
+              className="w-full md:w-100rem"
+              checkmark
+              highlightOnSelect={false}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="card flex flex-wrap gap-3 p-fluid mt-2">
         <div className="ml-auto">
-          <Toast ref={toast} position="bottom-left"/>
+          <Toast ref={toast} position="bottom-left" />
           <ConfirmDialog
             group="declarative"
             visible={visible}
@@ -462,7 +554,7 @@ export default function ProductosFaltantes() {
           </div>
         </div>
       </div>
-      <div className="card">
+      <div className="card p-fluid">
         <DataTable
           value={productosRegistrados}
           editMode="row"
@@ -473,32 +565,38 @@ export default function ProductosFaltantes() {
           rows={3}
           rowsPerPageOptions={[3, 6]}
           header="Productos Registrados"
+          tableStyle={{ minWidth: '50rem' }}
         >
           <Column
             field="cantidad"
             header="Cantidad"
             editor={(options) => numberEditor(options)}
+            style={{ width: '11.11%' }}
           />
 
           <Column
             field="grosor"
             header="Grosor"
             editor={(options) => numberEditor(options)}
+            style={{ width: '11.11%' }}
           />
           <Column
             field="ancho"
             header="Ancho"
             editor={(options) => numberEditor(options)}
+            style={{ width: '11.11%' }}
           />
           <Column
             field="largo"
             header="Largo"
             editor={(options) => numberEditor(options)}
+            style={{ width: '11.11%' }}
           />
           <Column
             field="calidad"
             header="Calidad"
             editor={(options) => calidadEditor(options)}
+            style={{ width: '11.11%' }}
           />
           <Column
             header="Pies/Tabla"
@@ -512,9 +610,25 @@ export default function ProductosFaltantes() {
                 12;
               return piesPorTabla.toFixed(0);
             }}
+            style={{ width: '11.11%' }}
           />
-          <Column rowEditor header="Editar" bodyStyle={{ textAlign: "left" }} />
-          <Column body={actionTemplate} header="Eliminar" />
+          <Column
+            field="identificadorP"
+            header="Producción"
+            editor={(options) => identificadorPEditor(options)}
+            style={{ width: '11.11%' }}
+          />
+          <Column
+            rowEditor
+            header="Editar"
+            bodyStyle={{ textAlign: "left" }}
+            style={{ width: '11.11%' }}
+          />
+          <Column
+            body={actionTemplate}
+            header="Eliminar"
+            style={{ width: '11.11%' }}
+          />
         </DataTable>
       </div>
       <div className="card flex justify-end mt-5">

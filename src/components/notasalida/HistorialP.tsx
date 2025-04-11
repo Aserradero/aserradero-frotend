@@ -1,15 +1,14 @@
 import PageBreadcrumb from "../common/PageBreadCrumb";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { ConfirmDialog } from "primereact/confirmdialog";
 import axios from "axios";
 import PageMeta from "../common/PageMeta";
 import Badge from "../ui/badge/Badge";
 import { ArrowUpIcon } from "../../icons";
 import { Tag } from "primereact/tag";
-import { Button } from "primereact/button";
 
 export default function HistorialP() {
   // Definir el tipo para los productos
@@ -36,6 +35,10 @@ export default function HistorialP() {
   //obtener el número de producción en la que va
 
   // Función para recargar los datos de la API
+  useEffect(() => {
+    recargarMateriaPrima();
+  }, []); // Llamar a la función al cargar el componente
+
   const recargarMateriaPrima = async () => {
     try {
       const response = await axios.get<Product[]>(
@@ -56,7 +59,7 @@ export default function HistorialP() {
   };
 
   // Actualizar el progreso cuando se selecciona una fase
-
+  /*
   const actionTemplate = (rowData: any) => {
     return (
       <>
@@ -68,6 +71,7 @@ export default function HistorialP() {
       </>
     );
   };
+  */
 
   return (
     <div className="container mx-auto p-2">
@@ -148,7 +152,6 @@ export default function HistorialP() {
             style={{ width: "20%" }}
             body={(rowData) => `${rowData.largo} cm`}
           ></Column>
-          <Column body={actionTemplate} header="Editar" />
         </DataTable>
         <ConfirmDialog group="templating" />
       </div>

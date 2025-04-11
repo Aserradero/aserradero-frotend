@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 
-const useIdleLogout = (timeout: number = 3000000) => { // 5 minutos (300000 ms)
+const useIdleLogout = (timeout: number = 300000) => { // 5 minutos (300000 ms)
     const navigate = useNavigate();
 
     useEffect(() => {
