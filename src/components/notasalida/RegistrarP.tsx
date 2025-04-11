@@ -51,7 +51,6 @@ export default function RegistrarP() {
   const [isUpdated, setIsUpdated] = useState(false);
   const userData = localStorage.getItem("user"); // Puede ser un string o null
 
-
   // Estado para la calidad seleccionada
   const [selectedCalidad, setSelectedCalidad] = useState<Calidad | null>(null);
 
@@ -98,7 +97,7 @@ export default function RegistrarP() {
         value={options.value}
         onValueChange={(e) => options.editorCallback!(e.value)}
         min={1}
-        style={{ width: "2rem", padding: "8px" }}
+        
       />
     );
   };
@@ -106,25 +105,25 @@ export default function RegistrarP() {
   // Función para recargar los datos de la API
   const recargarMateriaPrima = async () => {
     if (isUpdated) return;
-    const accesoTres=localStorage.getItem("registrarP");
-    if(accesoTres!=null && accesoTres==="true"){
-    try {
-      const response = await axios.get<Product[]>(
-        "https://api.uniecosanmateo.icu/api/rawMaterials"
-      );
-      const identificadorMa = response.data.reduce((max, current) => {
-        return current.identificadorP > max.identificadorP ? current : max;
-      }, response.data[0]);
-      console.log(
-        "Numero de produccion en la que va: ",
-        identificadorMa.identificadorP
-      );
-      //setProducts(response.data);
-      setNumeroProduccion(identificadorMa.identificadorP);
-    } catch (error) {
-      console.error("Error al obtener los productos", error);
+    const accesoTres = localStorage.getItem("registrarP");
+    if (accesoTres != null && accesoTres === "true") {
+      try {
+        const response = await axios.get<Product[]>(
+          "https://api.uniecosanmateo.icu/api/rawMaterials"
+        );
+        const identificadorMa = response.data.reduce((max, current) => {
+          return current.identificadorP > max.identificadorP ? current : max;
+        }, response.data[0]);
+        console.log(
+          "Numero de produccion en la que va: ",
+          identificadorMa.identificadorP
+        );
+        //setProducts(response.data);
+        setNumeroProduccion(identificadorMa.identificadorP);
+      } catch (error) {
+        console.error("Error al obtener los productos", error);
+      }
     }
-  }
   };
 
   const calidadEditor = (options: ColumnEditorOptions) => {
@@ -316,7 +315,8 @@ export default function RegistrarP() {
         toast.current?.show({
           severity: "error",
           summary: "Denegado",
-          detail: "Se debe de terminar todas la fases antes de registrar los productos.",
+          detail:
+            "Se debe de terminar todas la fases antes de registrar los productos.",
           life: 5000,
         });
       }
@@ -324,13 +324,14 @@ export default function RegistrarP() {
       toast.current?.show({
         severity: "error",
         summary: "Denegado",
-        detail: "Se debe de terminar todas la fases antes de registrar los productos.",
+        detail:
+          "Se debe de terminar todas la fases antes de registrar los productos.",
         life: 5000,
       });
     }
   };
 
-  const registrarInventario = async ( 
+  const registrarInventario = async (
     productosGuardados: ProductoGuardado[]
   ) => {
     if (productosGuardados.length === 0) {
@@ -533,7 +534,7 @@ export default function RegistrarP() {
           </div>
         </div>
       </div>
-      <div className="card">
+      <div className="card p-fluid">
         <DataTable
           value={productosRegistrados}
           editMode="row"
@@ -544,32 +545,38 @@ export default function RegistrarP() {
           rows={3}
           rowsPerPageOptions={[3, 6]}
           header="Productos Registrados"
+          tableStyle={{ minWidth: "50rem" }}
         >
           <Column
             field="cantidad"
             header="Cantidad"
             editor={(options) => numberEditor(options)}
+            style={{ width: "12.5%" }}
           />
 
           <Column
             field="grosor"
             header="Grosor"
             editor={(options) => numberEditor(options)}
+            style={{ width: "12.5%" }}
           />
           <Column
             field="ancho"
             header="Ancho"
             editor={(options) => numberEditor(options)}
+            style={{ width: "12.5%" }}
           />
           <Column
             field="largo"
             header="Largo"
             editor={(options) => numberEditor(options)}
+            style={{ width: "12.5%" }}
           />
           <Column
             field="calidad"
             header="Calidad"
             editor={(options) => calidadEditor(options)}
+            style={{ width: "12.5%" }}
           />
           <Column
             header="Pies/Tabla"
@@ -583,9 +590,20 @@ export default function RegistrarP() {
                 12;
               return piesPorTabla.toFixed(0); // Limitar a dos decimales
             }}
+            style={{ width: "12.5%" }}
+
           />
-          <Column rowEditor header="Editar" bodyStyle={{ textAlign: "left" }} />
-          <Column body={actionTemplate} header="Eliminar" />
+          <Column
+            rowEditor
+            header="Editar"
+            bodyStyle={{ textAlign: "left" }}
+            style={{ width: "12.5%" }}
+          />
+          <Column
+            body={actionTemplate}
+            header="Eliminar"
+            style={{ width: "12.5%" }}
+          />
         </DataTable>
       </div>
       <div className="card flex justify-end mt-5">
